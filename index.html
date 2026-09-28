@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIDMA — Équipement de cuisine professionnelle depuis 1975</title>
+<meta name="description" content="SIDMA, spécialiste français de l'équipement de cuisine professionnelle depuis 1975. Conception, installation et location de matériel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,500;62..125,700;62..125,800;62..125,900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #0e0e0f;
+    --anthracite: #1a1b1d;
+    --acier: #2a2c2f;
+    --gris: #6d7075;
+    --gris-clair: #b9bcc0;
+    --beton: #e8e8e6;
+    --blanc: #f7f7f5;
+    --orange: #ff5a1f;
+    --orange-sombre: #d9440f;
+    --trait: rgba(255,255,255,.12);
+    --trait-sombre: rgba(14,14,15,.14);
+    --gutter: clamp(16px, 4vw, 56px);
+    --max: 1360px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Archivo', system-ui, sans-serif;
+    background: var(--noir);
+    color: var(--blanc);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* Paragraphes justifiés, sans coupure des mots en fin de ligne */
+  p { text-align: justify; hyphens: manual; -webkit-hyphens: manual; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .display {
+    font-stretch: 75%;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: .88;
+    letter-spacing: -.01em;
+  }
+  .orange { color: var(--orange); }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    background: rgba(14,14,15,.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--trait);
+    transition: transform .45s cubic-bezier(.2,.7,.2,1), opacity .35s;
+  }
+  /* Barre masquée pendant le portail d'ouverture */
+  .nav.is-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; position: relative; }
+  .logo { display: flex; align-items: center; }
+  .logo img { height: 48px; width: auto; display: block; }
+  /* Liens centrés sur la page, indépendamment de la largeur du logo et du bouton */
+  .nav ul { list-style: none; display: flex; gap: 36px; position: absolute; left: 50%; transform: translateX(-50%); }
+  .nav .nav-mobile-only { display: none; }
+  .nav ul a { color: var(--gris-clair); transition: color .2s; }
+  .nav ul a:hover { color: var(--blanc); }
+  .nav-cta {
+    background: var(--orange); color: var(--noir); padding: 12px 20px; font-weight: 700;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 10px) 100%, 0 100%);
+    transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--blanc); }
+  .burger { display: none; background: none; border: 1px solid var(--trait); width: 44px; height: 44px; color: var(--blanc); cursor: pointer; }
+  .burger span { display: block; width: 18px; height: 2px; background: currentColor; margin: 4px auto; }
+
+  /* ---------- PORTAIL D'OUVERTURE (Glyph Portal, js/glyph-portal.js) ---------- */
+  #portail { --gp-paper: var(--noir); --gp-ink: var(--blanc); --gp-field: var(--orange); --gp-foreground: var(--blanc);
+    position: relative; isolation: isolate; background: var(--gp-paper); color: var(--gp-ink); font-family: 'Archivo', sans-serif; }
+  #portail > [data-gp-viewport] { position: absolute; inset: 0 auto auto 0; height: 100vh; height: 100svh; width: 0; pointer-events: none; visibility: hidden; }
+  #portail [data-gp-pin] { position: relative; height: var(--gp-height, 100svh); overflow: clip; isolation: isolate; container-type: size; }
+  #portail [data-gp-field] { position: absolute; inset: 0; background: var(--gp-field); opacity: 0; pointer-events: none; }
+  #portail[data-gp-ready] [data-gp-field] { opacity: 1; }
+  #portail .gp-waves { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transform: scale(var(--gp-field-scale, 1)); }
+  #portail [data-gp-art] { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  #portail [data-gp-marks] { fill: none; stroke: var(--gp-ink); opacity: .6; }
+  #portail [data-gp-choices] { position: absolute; inset: 0; visibility: hidden; pointer-events: none; }
+  #portail[data-gp-choosing=true] [data-gp-choices] { visibility: visible; }
+  #portail [data-gp-letter] { box-sizing: border-box; position: absolute; border: 0; padding: 0; margin: 0; background: transparent; cursor: pointer; pointer-events: auto; touch-action: pan-y; }
+  #portail [data-gp-letter]:disabled { pointer-events: none; }
+  #portail [data-gp-letter]:focus-visible { outline: 2px solid var(--orange); outline-offset: 5px; }
+  #portail [data-gp-touch-picker] { display: none; position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); align-items: center; gap: 12px; visibility: hidden; }
+  #portail[data-gp-choosing=true] [data-gp-touch-picker] { visibility: visible; }
+  #portail [data-gp-select] { min-height: 44px; min-width: 110px; border: 1px solid var(--trait); background: var(--anthracite); color: var(--gris-clair); padding: 0 10px; }
+  @media (any-pointer: coarse) { #portail [data-gp-touch-picker] { display: flex; } }
+  #portail [data-gp-fallback] { position: absolute; inset: 0; display: none; place-items: center; font-size: min(calc(100cqw / var(--gp-characters)), 38cqh); line-height: 1; color: var(--orange); font-weight: 900; }
+  #portail[data-gp-ready] [data-gp-fallback] { visibility: hidden; }
+  #portail [data-gp-front] { position: absolute; inset: 0; opacity: var(--gp-caption, 1); pointer-events: none; }
+  .gp-eyebrow { position: absolute; inset: auto 24px calc(100% - var(--gp-word-top, 35%) + 28px); margin: 0; text-align: center; color: var(--gris-clair); display: flex; justify-content: center; align-items: center; gap: 14px; }
+  .gp-eyebrow::before, .gp-eyebrow::after { content: ""; width: 32px; height: 2px; background: var(--orange); }
+  .gp-support { position: absolute; inset: calc(var(--gp-word-bottom, 50%) + 28px) 24px auto; margin: 0; text-align: center; color: var(--gris); }
+  .gp-scroll { position: absolute; inset: auto 24px 6%; text-align: center; color: var(--gris); font-size: 11px; }
+  #portail [data-gp-caption] { position: absolute; inset: calc(var(--gp-word-bottom, 50%) + 76px) 24px auto; display: flex; justify-content: center; opacity: var(--gp-caption, 1); pointer-events: var(--gp-caption-hit, auto); }
+  #portail [data-gp-caption]:focus-within { opacity: 1; pointer-events: auto; }
+  #portail [data-gp-hint] { display: none; }
+  #portail [data-gp-enter] { display: inline-flex; align-items: center; gap: 14px; background: var(--orange); color: var(--noir); padding: 16px 26px; font-weight: 700; font-size: 14px; transition: background .2s;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, calc(100% - 10px) 100%, 0 100%); }
+  #portail [data-gp-enter]:hover { background: var(--blanc); }
+  #portail [data-gp-enter]:focus-visible { outline: 2px solid var(--blanc); outline-offset: 4px; }
+  #portail [data-gp-content] { box-sizing: border-box; position: relative; min-height: var(--gp-height, 100svh); padding: 110px var(--gutter) 80px; display: grid; align-content: center; color: var(--gp-foreground); background: var(--gp-field); }
+  #portail[data-gp-motion=on] [data-gp-pin] { position: sticky; top: 0; }
+  #portail[data-gp-motion=on] [data-gp-content] { margin-top: calc((var(--gp-length) - 1) * var(--gp-height)); background: transparent; opacity: var(--gp-reveal, 0); pointer-events: none; }
+  #portail[data-gp-motion=on][data-gp-entered=true] [data-gp-content] { pointer-events: auto; }
+  #portail[data-gp-motion=on]:has([data-gp-content]:focus-within) [data-gp-field] { clip-path: none !important; }
+  #portail[data-gp-motion=on] [data-gp-content]:focus-within { opacity: 1; pointer-events: auto; }
+  #portail:has([data-gp-content]:focus-within) [data-gp-caption], #portail:has([data-gp-content]:focus-within) [data-gp-marks] { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    #portail [data-gp-pin] { position: relative !important; }
+    #portail [data-gp-content] { margin-top: 0 !important; opacity: 1 !important; background: var(--anthracite) !important; min-height: 0; padding-block: 64px; }
+    #portail [data-gp-caption] { opacity: 1 !important; }
+  }
+  /* Contenu révélé une fois « entré » dans la lettre */
+  .gp-copy { width: 100%; max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: clamp(32px, 5svh, 56px); }
+  .gp-copy .mono { color: var(--blanc); display: flex; align-items: center; gap: 14px; }
+  .gp-copy .mono::before { content: ""; width: 40px; height: 2px; background: var(--blanc); }
+  .gp-copy h2 { font-size: clamp(44px, 7vw, 112px); max-width: 12ch; text-shadow: 0 2px 30px rgba(14,14,15,.25); }
+  .gp-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--blanc); }
+  .gp-features > div { padding: 22px 28px 0 0; }
+  .gp-features > div + div { padding-left: 28px; border-left: 1px solid rgba(247,247,245,.3); }
+  .gp-features h3 { font-size: 20px; font-weight: 800; font-stretch: 85%; text-transform: uppercase; margin: 10px 0 8px; }
+  .gp-features p { color: rgba(247,247,245,.88); font-size: 15px; }
+  .gp-features .mono { color: var(--blanc); font-size: 11px; }
+  .gp-features .mono::before { display: none; }
+  @media (max-width: 760px) {
+    .gp-features { grid-template-columns: 1fr; }
+    .gp-features > div, .gp-features > div + div { padding: 18px 0; border-left: 0; border-bottom: 1px solid rgba(247,247,245,.3); }
+  }
+  @container (max-height: 479px) { .gp-scroll { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 100vh; padding-top: 72px; position: relative;
+    display: grid; grid-template-rows: 1fr auto;
+    border-bottom: 1px solid var(--trait); overflow: hidden; background: var(--noir);
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 7fr 5fr; gap: 0;
+    max-width: var(--max); width: 100%; margin: 0 auto; padding: 0 var(--gutter);
+  }
+  .hero-copy { padding: clamp(48px, 8vh, 110px) 48px clamp(48px, 8vh, 96px) 0; display: flex; flex-direction: column; justify-content: center; }
+  .hero-copy .mono { color: var(--gris-clair); display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+  .hero-copy .mono::before { content: ""; width: 40px; height: 2px; background: var(--orange); }
+  .hero h1 { font-size: clamp(56px, 9.2vw, 148px); }
+  .hero h1 .outline { color: transparent; -webkit-text-stroke: 1.5px var(--blanc); }
+  .hero p.lead { max-width: 520px; margin-top: 36px; font-size: 18px; color: var(--gris-clair); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 44px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 14px; padding: 18px 28px;
+    font-weight: 700; font-size: 15px; letter-spacing: .02em; transition: all .2s;
+  }
+  .btn-orange { background: var(--orange); color: var(--noir); }
+  .btn-orange:hover { background: var(--blanc); }
+  .btn-ghost { border: 1px solid rgba(255,255,255,.3); }
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+  .btn svg { width: 16px; height: 16px; }
+
+  .hero-visual { position: relative; border-left: 1px solid var(--trait); }
+  .hero-visual .img-main {
+    position: absolute; top: 48px; right: calc(-1 * var(--gutter)); bottom: 0; left: 48px;
+  }
+  .hero-visual .img-main img { object-position: 35% 20%; }
+  .hero-visual .img-main::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 65%, rgba(14,14,15,.45));
+  }
+  .hero-block {
+    position: absolute; left: 0; bottom: 64px; z-index: 2;
+    background: var(--orange); color: var(--noir); padding: 28px 32px; width: 240px;
+    box-shadow: 0 0 0 6px var(--noir); /* détache le bloc du fond animé orangé */
+  }
+  .hero-block .display { font-size: 72px; }
+  .hero-block .mono { font-size: 11px; margin-top: 10px; display: block; }
+  .hero-square { position: absolute; top: 48px; left: 48px; width: 88px; height: 88px; background: var(--noir); z-index: 2; }
+  .hero-square::after { content: ""; position: absolute; inset: 28px; border: 2px solid var(--orange); }
+
+  /* Fond sombre translucide : la vague reste visible, les chiffres restent lisibles */
+  .hero-strip { border-top: 1px solid var(--trait); background: rgba(14,14,15,.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .hero-strip .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .hero-strip div.item { padding: 26px 0; border-right: 1px solid var(--trait); padding-left: 24px; }
+  .hero-strip div.item:first-child { padding-left: 0; }
+  .hero-strip div.item:last-child { border-right: 0; }
+  .hero-strip strong { display: block; font-size: 30px; font-weight: 800; font-stretch: 80%; }
+  .hero-strip span { color: var(--gris); }
+
+  /* ---------- SECTIONS ---------- */
+  section { position: relative; scroll-margin-top: 72px; }
+  .sec-head { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; margin-bottom: 64px; }
+  .sec-num { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .sec-num b { background: var(--orange); color: var(--noir); padding: 4px 8px; font-weight: 500; }
+  .sec-head h2 { font-size: clamp(44px, 6.4vw, 96px); }
+  .sec-head p { max-width: 480px; font-size: 17px; justify-self: end; }
+
+  /* ---------- MAISON (light) ---------- */
+  .maison { background: var(--blanc); color: var(--noir); padding: clamp(80px, 12vw, 160px) 0; }
+  .maison .sec-head p { color: #45474b; }
+  .maison .sec-num { color: var(--gris); }
+  .maison-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+  /* Visuel carré avec texte intégré : affiché en entier, sans recadrage */
+  .m-img-a { grid-column: 1 / 6; grid-row: 1 / 3; align-self: start; aspect-ratio: 1 / 1; position: relative; }
+  .m-text { grid-column: 7 / 13; padding: 8px 0 32px; }
+  .m-text h3 { font-size: clamp(26px, 2.6vw, 38px); font-weight: 700; font-stretch: 85%; line-height: 1.15; margin-bottom: 24px; }
+  .m-text p { color: #45474b; margin-bottom: 18px; max-width: 560px; }
+  .m-values { grid-column: 6 / 13; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 2px solid var(--noir); }
+  .m-values div { padding: 28px 24px 0 0; }
+  .m-values div + div { padding-left: 24px; border-left: 1px solid var(--trait-sombre); }
+  .m-values .mono { color: var(--orange-sombre); }
+  .m-values h4 { font-size: 20px; font-weight: 800; font-stretch: 85%; text-transform: uppercase; margin: 12px 0 8px; }
+  .m-values p { color: #55575b; font-size: 15px; }
+
+  .timeline { margin-top: 96px; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--noir); color: var(--blanc); }
+  .timeline div { padding: 32px 28px 36px; border-right: 1px solid var(--trait); position: relative; }
+  .timeline div:last-child { border-right: 0; background: var(--orange); color: var(--noir); }
+  .timeline .year { font-size: 44px; font-weight: 900; font-stretch: 75%; line-height: 1; }
+  .timeline p { color: var(--gris-clair); font-size: 14px; margin-top: 12px; }
+  .timeline div:last-child p { color: var(--anthracite); }
+
+.partners { margin-top: 64px; display: grid; grid-template-columns: 5fr 7fr; gap: 48px; align-items: center; padding-top: 48px; border-top: 2px solid var(--noir); }
+.partners .sec-num { color: var(--gris); margin-bottom: 18px; }
+.partners-text p { font-size: clamp(20px, 2vw, 26px); font-weight: 700; font-stretch: 85%; line-height: 1.25; max-width: 460px; }
+.partners-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--trait-sombre); border: 1px solid var(--trait-sombre); }
+.partner { background: var(--beton); height: 150px; display: grid; place-items: center; padding: 28px 36px; position: relative; transition: background .25s; }
+.partner::before { content: ""; position: absolute; top: 0; left: 0; width: 14px; height: 14px; background: var(--orange); transform: scale(0); transform-origin: top left; transition: transform .25s; }
+.partner:hover { background: #fff; }
+.partner:hover::before { transform: scale(1); }
+/* Logos en couleur ; multiply fait disparaître le fond blanc des JPG sur la case grise */
+.partner img { max-height: 80px; max-width: 100%; width: auto; height: auto; object-fit: contain; mix-blend-mode: multiply; }
+.partner img[alt="RATIONAL"] { max-height: 60px; } /* logo compact et plein : réduit pour équilibrer avec EuroChef */
+.partner img + .partner-name { display: none; }
+.partner-name { font-size: clamp(26px, 2.8vw, 38px); color: var(--noir); line-height: 1; }
+.partner-name.rational { font-weight: 900; font-stretch: 110%; letter-spacing: .06em; }
+.partner-name.eurochef { font-weight: 800; font-style: italic; letter-spacing: -.01em; }
+
+/* ---------- RÉALISATIONS ---------- */
+  .realisations { padding: clamp(80px, 12vw, 160px) 0; background: var(--noir); }
+  .realisations .sec-head p { color: var(--gris-clair); }
+  .realisations .sec-num { color: var(--gris); }
+  .gallery {
+    display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 120px; gap: 12px;
+  }
+  .g-item { position: relative; overflow: hidden; background: var(--acier); }
+  .g-item img { filter: grayscale(1) brightness(.85); transition: transform .8s cubic-bezier(.2,.7,.2,1), filter .5s; }
+  .g-item:hover img { transform: scale(1.05); filter: grayscale(.2) brightness(.95); }
+  .g-item .info {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 24px;
+    background: linear-gradient(0deg, rgba(14,14,15,.92), transparent);
+    display: flex; justify-content: space-between; align-items: end; gap: 16px;
+  }
+  .g-item h3 { font-size: 22px; font-weight: 800; font-stretch: 85%; text-transform: uppercase; line-height: 1.05; }
+  .g-item .mono { color: var(--gris-clair); font-size: 11px; margin-top: 6px; display: block; }
+  .g-item .tag { background: var(--orange); color: var(--noir); padding: 5px 9px; font-size: 10px; white-space: nowrap; }
+  .g1 { grid-column: 1 / 5; grid-row: span 6; }
+  .g2, .g4 { grid-column: 5 / 9; grid-row: span 3; }
+  .g3, .g5 { grid-column: 9 / 13; grid-row: span 3; }
+
+  /* ---------- LOCATION ---------- */
+  .location { background: var(--beton); color: var(--noir); padding: clamp(80px, 12vw, 160px) 0; }
+  .location .sec-head p { color: #45474b; }
+  .location .sec-num { color: var(--gris); }
+  .filters { scroll-margin-top: 100px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+  .filters button {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--noir); color: var(--noir); padding: 10px 16px; cursor: pointer;
+    transition: all .2s; display: inline-flex; gap: 8px; align-items: center;
+  }
+  .filters button small { font-size: 10px; opacity: .55; }
+  .filters button:hover { background: var(--noir); color: var(--blanc); }
+  .filters button.active { background: var(--orange); border-color: var(--orange); color: var(--noir); }
+  .filters button.active small { opacity: .8; }
+  .equip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--trait-sombre); border: 1px solid var(--trait-sombre); }
+  .equip { background: var(--blanc); display: flex; flex-direction: column; animation: fadeUp .5s both; }
+  .equip[hidden] { display: none; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .equip .thumb { aspect-ratio: 1 / 1; overflow: hidden; position: relative; background: #f0f0ee; display: grid; place-items: center; }
+  .equip .thumb img { width: 76%; height: 76%; object-fit: contain; mix-blend-mode: multiply; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .equip:hover .thumb img { transform: scale(1.05); }
+  .equip .num {
+    position: absolute; top: 14px; left: 18px; font-weight: 900; font-stretch: 75%; font-size: 44px; line-height: 1;
+    color: rgba(14,14,15,.09);
+  }
+  .equip .ref { position: absolute; top: 0; right: 0; background: var(--noir); color: var(--blanc); padding: 6px 10px; font-size: 10px; }
+  .equip .body { padding: 22px 22px 0; display: flex; flex-direction: column; flex: 1; }
+  .equip .cat { color: var(--orange-sombre); font-size: 11px; }
+  .equip h3 { font-size: 20px; font-weight: 800; font-stretch: 85%; text-transform: uppercase; line-height: 1.1; margin: 8px 0 10px; }
+  .equip p { color: #55575b; font-size: 14px; }
+  .specs { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 18px; }
+  .specs li { font-family: 'JetBrains Mono', monospace; font-size: 11px; border: 1px solid var(--trait-sombre); padding: 4px 8px; color: #3a3c40; }
+  .equip details { margin-top: auto; border-top: 1px solid var(--trait-sombre); }
+  .equip summary {
+    list-style: none; cursor: pointer; padding: 12px 0; display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gris);
+  }
+  .equip summary::-webkit-details-marker { display: none; }
+  .equip summary::after { content: "+"; font-size: 16px; color: var(--noir); transition: transform .2s; }
+  .equip details[open] summary::after { transform: rotate(45deg); }
+  .equip dl { padding-bottom: 14px; font-size: 13px; }
+  .equip dt { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--orange-sombre); margin-top: 10px; }
+  .equip dd { color: #45474b; }
+  .equip .price {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    background: var(--noir); color: var(--blanc); padding: 14px 22px;
+  }
+  .equip .price .mono { font-size: 10px; color: var(--gris-clair); }
+  .equip .price strong { font-size: 22px; font-weight: 900; font-stretch: 80%; white-space: nowrap; }
+  .equip .price strong span { font-size: 12px; font-weight: 500; color: var(--orange); margin-left: 4px; }
+  .equip-more { display: flex; justify-content: center; margin-top: 32px; }
+  .equip-more[hidden] { display: none; }
+  .equip-more button { background: var(--noir); color: var(--blanc); border: 0; cursor: pointer; font-family: inherit; }
+  .equip-more button:hover { background: var(--orange); color: var(--noir); }
+
+  .loc-info { margin-top: 56px; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 1px; background: var(--trait); }
+  .loc-info > div { background: var(--noir); color: var(--blanc); padding: 32px; }
+  .loc-info h4 { font-size: 22px; font-weight: 800; font-stretch: 85%; text-transform: uppercase; margin: 10px 0 18px; }
+  .loc-info .mono { color: var(--orange); }
+  .loc-info ol { list-style: none; counter-reset: m; }
+  .loc-info ol li { counter-increment: m; display: flex; gap: 14px; padding: 10px 0; border-top: 1px solid var(--trait); color: var(--gris-clair); font-size: 14px; }
+  .loc-info ol li::before { content: "0" counter(m); font-family: 'JetBrains Mono', monospace; color: var(--orange); font-size: 12px; padding-top: 2px; }
+  .loc-info table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .loc-info td { padding: 10px 0; border-top: 1px solid var(--trait); color: var(--gris-clair); }
+  .loc-info td:last-child { text-align: right; color: var(--blanc); font-weight: 700; }
+  .loc-info p { color: var(--gris-clair); font-size: 14px; margin-bottom: 10px; }
+  .loc-info .accent { background: var(--orange); color: var(--noir); }
+  .loc-info .accent .mono, .loc-info .accent p { color: var(--noir); }
+
+  /* ---------- CONTACT ---------- */
+  .contact { background: var(--anthracite); padding: clamp(80px, 12vw, 160px) 0 0; overflow: hidden; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--trait); }
+  .contact-left { padding: clamp(32px, 5vw, 64px); border-right: 1px solid var(--trait); }
+  .contact-left h2 { font-size: clamp(48px, 7vw, 110px); margin-bottom: 28px; }
+  .contact-left p { color: var(--gris-clair); max-width: 420px; }
+  .contact-right { display: grid; grid-template-rows: 1fr 1fr auto; }
+  .c-line { padding: clamp(28px, 4vw, 48px); border-bottom: 1px solid var(--trait); display: block; position: relative; transition: background .25s; }
+  .c-line:hover { background: var(--acier); }
+  .c-line .mono { color: var(--gris); }
+  .c-line .val { display: block; font-size: clamp(22px, 2.8vw, 40px); font-weight: 800; font-stretch: 80%; margin-top: 10px; word-break: break-word; }
+  .c-line .arrow { position: absolute; right: clamp(28px, 4vw, 48px); top: 50%; transform: translateY(-50%); width: 48px; height: 48px; background: var(--orange); display: grid; place-items: center; transition: transform .25s; }
+  .c-line:hover .arrow { transform: translateY(-50%) rotate(-45deg); }
+  .c-line .arrow svg { width: 20px; height: 20px; color: var(--noir); }
+  .c-hours { color: var(--gris); font-size: 14px; margin-top: 6px; }
+  .socials { padding: clamp(28px, 4vw, 48px); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .socials ul { list-style: none; display: flex; gap: 10px; }
+  .socials a {
+    width: 56px; height: 56px; display: grid; place-items: center;
+    border: 1px solid var(--trait); transition: all .2s;
+  }
+  .socials a:hover { background: var(--orange); border-color: var(--orange); color: var(--noir); }
+  .socials svg { width: 22px; height: 22px; }
+
+.contact-extra { display: grid; grid-template-columns: 7fr 5fr; border: 1px solid var(--trait); border-top: 0; }
+.contact-photo { position: relative; overflow: hidden; min-height: 420px; border-right: 1px solid var(--trait); }
+.contact-photo img { position: absolute; inset: 0; transition: transform 1s cubic-bezier(.2,.7,.2,1); }
+.contact-photo:hover img { transform: scale(1.03); }
+.contact-photo .corner { position: absolute; right: 0; bottom: 0; width: 72px; height: 72px; background: var(--orange); }
+.contact-photo .corner::after { content: ""; position: absolute; inset: 22px; background: var(--anthracite); clip-path: polygon(0 0, 100% 0, 100% 40%, 40% 100%, 0 100%); }
+.contact-address { padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; justify-content: center; }
+.contact-address > .mono { color: var(--gris); }
+.contact-address address { font-style: normal; font-size: clamp(22px, 2.4vw, 32px); font-weight: 800; font-stretch: 80%; line-height: 1.2; margin: 14px 0 18px; padding-left: 20px; border-left: 3px solid var(--orange); }
+.contact-address address strong { color: var(--orange); }
+
+.giant {
+    font-size: clamp(90px, 27vw, 420px); color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.14);
+    text-align: center; line-height: .8; margin-top: 64px; user-select: none; letter-spacing: .02em;
+  }
+
+  footer { background: var(--noir); border-top: 1px solid var(--trait); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 26px; padding-bottom: 26px; color: var(--gris); }
+
+  /* ---------- REVEAL ---------- */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 1080px) {
+    .equip-grid { grid-template-columns: repeat(3, 1fr); }
+    .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .timeline div:nth-child(3) { border-right: 0; }
+    .timeline div:nth-child(-n+3) { border-bottom: 1px solid var(--trait); }
+  }
+  @media (max-width: 900px) {
+    .nav ul, .nav-cta { display: none; }
+    .burger { display: block; }
+    .nav.open ul {
+      display: flex; flex-direction: column; gap: 0; position: absolute; top: 72px; left: 0; right: 0; transform: none;
+      background: var(--noir); border-bottom: 1px solid var(--trait);
+    }
+    .nav.open .nav-mobile-only { display: block; }
+    .nav.open ul a { display: block; padding: 18px var(--gutter); border-top: 1px solid var(--trait); }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-copy { padding-right: 0; }
+    .hero-visual { min-height: 420px; border-left: 0; }
+    .hero-visual .img-main { top: 0; left: 0; right: calc(-1 * var(--gutter)); }
+    .hero-square { top: 0; left: 0; }
+    .hero-strip .wrap { grid-template-columns: 1fr 1fr; }
+    .hero-strip div.item { padding-left: 0 !important; }
+    .hero-strip div.item:nth-child(2) { border-right: 0; padding-left: 20px !important; }
+    .hero-strip div.item:nth-child(4) { padding-left: 20px !important; }
+    .hero-strip div.item:nth-child(-n+2) { border-bottom: 1px solid var(--trait); }
+    .sec-head { grid-template-columns: 1fr; gap: 24px; }
+    .sec-head p { justify-self: start; }
+    .maison-grid { grid-template-columns: 1fr; }
+    .m-img-a, .m-text, .m-values { grid-column: 1 / -1; grid-row: auto; }
+    .m-img-a { max-width: 560px; }
+    .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 110px; }
+    .g1 { grid-column: 1 / -1; grid-row: span 5; }
+    .g2, .g3, .g4, .g5 { grid-column: span 1; grid-row: span 3; }
+    .partners { grid-template-columns: 1fr; }
+    .contact-extra { grid-template-columns: 1fr; }
+    .contact-photo { min-height: 320px; }
+    .equip-grid { grid-template-columns: 1fr 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .loc-info { grid-template-columns: 1fr; }
+    .contact-left { border-right: 0; border-bottom: 1px solid var(--trait); }
+    .contact-photo { border-right: 0; border-bottom: 1px solid var(--trait); }
+  }
+  @media (max-width: 560px) {
+    .hero-block { width: 190px; padding: 20px 22px; bottom: 32px; }
+    .hero-block .display { font-size: 56px; }
+    .m-values { grid-template-columns: 1fr; }
+    .m-values div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--trait-sombre); margin-top: 24px; }
+    .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .timeline div { padding: 24px 18px 28px; }
+    .timeline div { border-right: 0 !important; border-bottom: 1px solid var(--trait); }
+    .timeline div:nth-child(odd) { border-right: 1px solid var(--trait) !important; }
+    .timeline div:last-child { grid-column: 1 / -1; }
+    .gallery { grid-template-columns: 1fr; }
+    .g1 { grid-column: 1 / -1; grid-row: span 5; }
+    .g2, .g3, .g4, .g5 { grid-column: 1 / -1; grid-row: span 3; }
+    .partners-logos { grid-template-columns: 1fr; }
+    .g-item .info { flex-direction: column; align-items: start; }
+    .equip-grid { grid-template-columns: 1fr; }
+    .c-line .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav is-hidden" id="nav">
+  <div class="wrap">
+    <a href="#portail" class="logo" aria-label="SIDMA — accueil">
+      <img src="images/logo/sidma-logo.png" alt="SIDMA — spécialiste en matériel de cuisine depuis 1975" width="572" height="237">
+    </a>
+    <ul>
+      <li><a href="#maison" class="mono">La maison</a></li>
+      <li><a href="#realisations" class="mono">Réalisations</a></li>
+      <li><a href="#location" class="mono">Location</a></li>
+      <li class="nav-mobile-only"><a href="#contact" class="mono">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta mono">Nous contacter</a>
+    <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ============ PORTAIL D'OUVERTURE ============ -->
+<section id="portail" aria-label="SIDMA" data-glyph-portal data-gp-word="SIDMA" data-gp-length="2.4" data-gp-font="Archivo, sans-serif" data-gp-weight="900">
+  <div data-gp-viewport aria-hidden="true"></div>
+  <div data-gp-pin>
+    <div data-gp-field aria-hidden="true" inert>
+      <!-- Vagues orange vues à travers les lettres (du bas vers le haut) -->
+      <canvas class="gp-waves" data-waves-shader data-waves-colors="#ff5a1f,#d9440f,#1a1b1d"></canvas>
+    </div>
+    <svg data-gp-art aria-hidden="true" focusable="false">
+      <defs>
+        <clipPath id="portail-clip" clipPathUnits="userSpaceOnUse">
+          <text data-gp-glyph x="0" y="0" style="font-family: Archivo, sans-serif; font-weight: 900; font-size: 100px; font-kerning: none; font-variant-ligatures: none; letter-spacing: 0">SIDMA</text>
+        </clipPath>
+      </defs>
+      <g data-gp-marks style="visibility: hidden"><path /></g>
+    </svg>
+    <div data-gp-choices role="radiogroup" aria-label="Choisissez la lettre par laquelle entrer" inert></div>
+    <label data-gp-touch-picker>
+      <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Lettre d'entrée</span>
+      <select data-gp-select class="mono"><option value="" disabled selected>Choisir une lettre</option></select>
+    </label>
+    <div data-gp-front>
+      <p class="gp-eyebrow mono">Spécialiste en matériel de cuisine depuis 1975</p>
+      <p class="gp-support mono">Conception · Installation · Location</p>
+      <span class="gp-scroll mono">Faites défiler pour entrer ↓</span>
+    </div>
+    <span data-gp-fallback aria-hidden="true">SIDMA</span>
+    <div data-gp-caption>
+      <span data-gp-hint aria-hidden="true">Faites défiler pour entrer.</span>
+      <a data-gp-enter href="#portail-content">Entrer<span aria-hidden="true">↘</span></a>
+    </div>
+  </div>
+  <div data-gp-content id="portail-content" tabindex="-1">
+    <div class="gp-copy">
+      <span class="mono">Bienvenue chez SIDMA</span>
+      <h2 class="display">Des cuisines pensées pour durer.</h2>
+      <div class="gp-features">
+        <div><span class="mono">— 01</span><h3>Concevoir</h3><p>Un bureau d'études qui dessine chaque implantation autour du geste du cuisinier.</p></div>
+        <div><span class="mono">— 02</span><h3>Installer</h3><p>Des équipes qui livrent, raccordent et mettent en service votre matériel.</p></div>
+        <div><span class="mono">— 03</span><h3>Louer</h3><p>38 références professionnelles disponibles à la journée ou pour plusieurs jours.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="accueil">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="mono">Équipementier de cuisine professionnelle · France</span>
+      <h1 class="display">L'acier<br>au service<br><span class="outline">du feu.</span></h1>
+      <p class="lead">Depuis 1975, SIDMA conçoit, installe et loue le matériel des cuisines qui ne s'arrêtent jamais : restaurants gastronomiques, collectivités, hôtellerie et métiers de bouche.</p>
+      <div class="hero-actions">
+        <a href="#realisations" class="btn btn-orange">Voir nos réalisations
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg>
+        </a>
+        <a href="#location" class="btn btn-ghost">Matériel en location</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="img-main"><img src="images/hero/batiment-sidma.jpg?v=2" alt="Le bâtiment SIDMA"></div>
+      <div class="hero-square" aria-hidden="true"></div>
+      <div class="hero-block">
+        <div class="display">1975</div>
+        <span class="mono">Année de fondation</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-strip">
+    <div class="wrap">
+      <div class="item"><strong>50<span class="orange">+</span></strong><span class="mono">années d'expertise</span></div>
+      <div class="item"><strong>3 200</strong><span class="mono">cuisines équipées</span></div>
+      <div class="item"><strong>38</strong><span class="mono">références en location</span></div>
+      <div class="item"><strong>24/7</strong><span class="mono">SAV &amp; dépannage</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ LA MAISON ============ -->
+<section class="maison" id="maison">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-num mono"><b>01</b> La maison</div>
+        <h2 class="display">Un demi-siècle<br>de cuisines<br>bien faites.</h2>
+      </div>
+      <p>Entreprise familiale française, SIDMA accompagne les professionnels de la restauration de l'étude du projet jusqu'à la maintenance, avec la même exigence depuis le premier jour.</p>
+    </div>
+
+    <div class="maison-grid">
+      <figure class="m-img-a reveal">
+        <img src="images/maison/cuisine-sur-mesure.webp" alt="La cuisine de vos rêves conçue sur mesure — SIDMA">
+      </figure>
+      <div class="m-text reveal">
+        <h3>Nous ne vendons pas du matériel. Nous construisons des outils de travail.</h3>
+        <p>Chaque cuisine professionnelle est une machine vivante : des flux, des températures, des cadences. Notre bureau d'études dessine des implantations pensées pour le geste du cuisinier, la sécurité sanitaire et la durabilité.</p>
+        <p>Nos techniciens installent, raccordent et entretiennent des équipements sélectionnés auprès des meilleurs fabricants européens. Et parce que chaque besoin n'appelle pas un achat, nous proposons un parc de location pour les événements, les saisons ou les phases de transition.</p>
+      </div>
+      <div class="m-values reveal">
+        <div>
+          <span class="mono">— 01</span>
+          <h4>Conception</h4>
+          <p>Relevés, plans 2D/3D et conformité HACCP.</p>
+        </div>
+        <div>
+          <span class="mono">— 02</span>
+          <h4>Installation</h4>
+          <p>Équipes intégrées, raccordements gaz, électricité et froid.</p>
+        </div>
+        <div>
+          <span class="mono">— 03</span>
+          <h4>Maintenance</h4>
+          <p>Contrats d'entretien et intervention rapide.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline reveal">
+      <div><div class="year">1975</div><p>Fondation de SIDMA et premier atelier de fabrication inox.</p></div>
+      <div><div class="year">1988</div><p>Création du bureau d'études et des premières cuisines collectives.</p></div>
+      <div><div class="year">2004</div><p>Lancement du service de maintenance et de dépannage.</p></div>
+      <div><div class="year">2016</div><p>Ouverture du parc de location de matériel professionnel.</p></div>
+      <div><div class="year">Auj.</div><p>Plus de 3 200 cuisines équipées partout en France.</p></div>
+    </div>
+
+    <div class="partners reveal">
+      <div class="partners-text">
+        <div class="sec-num mono"><b>+</b> Partenaires de confiance</div>
+        <p>Nous travaillons avec les meilleures marques pour vous garantir des solutions performantes et adaptées à vos besoins.</p>
+      </div>
+      <div class="partners-logos">
+        <!-- Déposez les logos officiels dans images/partenaires/ : ils remplacent automatiquement le nom affiché -->
+        <figure class="partner">
+          <img src="images/partenaires/rational.png" alt="RATIONAL" onerror="this.remove()">
+          <span class="partner-name rational">RATIONAL</span>
+        </figure>
+        <figure class="partner">
+          <img src="images/partenaires/eurochef.jpg" alt="EuroChef" onerror="this.remove()">
+          <span class="partner-name eurochef">EuroChef</span>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RÉALISATIONS ============ -->
+<section class="realisations" id="realisations">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-num mono"><b>02</b> Réalisations</div>
+        <h2 class="display">Ce que<br>nous avons<br><span class="orange">bâti.</span></h2>
+      </div>
+      <p>Une sélection d'installations réalisées par nos équipes : cuisines ouvertes, parcs de fours mixtes, systèmes de cuisson multifonction et lignes de cuisson sur mesure.</p>
+    </div>
+
+    <div class="gallery">
+      <article class="g-item g1 reveal">
+        <img src="images/realisations/1.jpg" alt="Réalisation SIDMA : restaurant — cuisine ouverte" loading="lazy">
+        <div class="info"><div><h3>Restaurant — cuisine ouverte</h3><span class="mono">Ligne de production en salle</span></div><span class="tag mono">Restauration</span></div>
+      </article>
+      <article class="g-item g2 reveal">
+        <img src="images/realisations/2.jpg" alt="Réalisation SIDMA : parc de fours mixtes" loading="lazy">
+        <div class="info"><div><h3>Parc de fours mixtes</h3><span class="mono">RATIONAL iCombi Pro</span></div><span class="tag mono">Cuisson</span></div>
+      </article>
+      <article class="g-item g3 reveal">
+        <img src="images/realisations/3.jpg" alt="Réalisation SIDMA : système de cuisson multifonction" loading="lazy">
+        <div class="info"><div><h3>Système de cuisson multifonction</h3><span class="mono">RATIONAL iVario Pro</span></div><span class="tag mono">Cuisson</span></div>
+      </article>
+      <article class="g-item g4 reveal">
+        <img src="images/realisations/4.jpg" alt="Réalisation SIDMA : ligne de cuisson sur mesure" loading="lazy">
+        <div class="info"><div><h3>Ligne de cuisson sur mesure</h3><span class="mono">Fourneaux, plaques &amp; sauteuses</span></div><span class="tag mono">Sur mesure</span></div>
+      </article>
+      <article class="g-item g5 reveal">
+        <img src="images/realisations/5.jpg" alt="Réalisation SIDMA : four mixte sur chariot" loading="lazy">
+        <div class="info"><div><h3>Four mixte sur chariot</h3><span class="mono">20 niveaux GN — production intensive</span></div><span class="tag mono">Cuisson</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCATION ============ -->
+<section class="location" id="location">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-num mono"><b>03</b> Location</div>
+        <h2 class="display">Notre parc<br>de matériel.</h2>
+      </div>
+      <p>38 références professionnelles disponibles à la journée ou pour plusieurs jours : cuisson, froid, laverie, maintien en température, inox et glace. Tarifs HT, hors livraison.</p>
+    </div>
+
+    <div class="filters reveal" role="group" aria-label="Filtrer les équipements"></div>
+    <div class="equip-grid" id="equip-grid"></div>
+    <div class="equip-more"><button class="btn mono" id="equip-more" aria-controls="equip-grid" aria-expanded="false">Voir tout le catalogue</button></div>
+
+    <div class="loc-info reveal">
+      <div>
+        <span class="mono">Mise à disposition</span>
+        <h4>3 modes selon le matériel</h4>
+        <ol>
+          <li>Retrait par le client avec un véhicule adapté</li>
+          <li>Livraison sur site</li>
+          <li>Livraison, mise en place et installation par SIDMA</li>
+        </ol>
+      </div>
+      <div>
+        <span class="mono">Livraison</span>
+        <h4>Tarifs de livraison</h4>
+        <table>
+          <tr><td>Jusqu'à 50 km</td><td>90 € HT</td></tr>
+          <tr><td>De 51 à 100 km</td><td>120 € HT</td></tr>
+          <tr><td>Au-delà de 100 km</td><td>Sur devis</td></tr>
+        </table>
+      </div>
+      <div class="accent">
+        <span class="mono">À retenir</span>
+        <h4>Restitution</h4>
+        <p>Le matériel doit être restitué nettoyé et les friteuses entièrement vidangées.</p>
+        <p>* Forfait installation non compris pour le matériel à installation obligatoire.</p>
+        <p>Photos non contractuelles. Disponibilité et caractéristiques confirmées au devis ; le matériel fourni peut être d'une marque ou d'un modèle équivalent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="contact-grid reveal">
+      <div class="contact-left">
+        <div class="sec-num mono" style="color:var(--gris)"><b>04</b> Contact</div>
+        <h2 class="display">Parlons<br>de votre<br><span class="orange">cuisine.</span></h2>
+        <p>Un projet d'aménagement, un besoin de location ou une intervention technique ? Notre équipe vous répond du lundi au vendredi.</p>
+      </div>
+      <div class="contact-right">
+        <a class="c-line" href="mailto:sidma@orange.fr">
+          <span class="mono">E-mail</span>
+          <span class="val">sidma@orange.fr</span>
+          <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg></span>
+        </a>
+        <a class="c-line" href="tel:+33164485330">
+          <span class="mono">Accueil téléphonique</span>
+          <span class="val">01 64 48 53 30</span>
+          <span class="c-hours mono">Lun – Ven · 8h00 – 18h00</span>
+          <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg></span>
+        </a>
+        <div class="socials">
+          <span class="mono" style="color:var(--gris)">Suivez-nous</span>
+          <ul>
+            <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener" aria-label="SIDMA sur LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            </a></li>
+            <li><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="SIDMA sur Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07z"/></svg>
+            </a></li>
+            <li><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="SIDMA sur Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1" fill="currentColor" stroke="none"/></svg>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-extra reveal">
+      <figure class="contact-photo">
+        <img src="images/contact/contact.jpg" alt="Des projets sur mesure — SIDMA" loading="lazy">
+        <span class="corner" aria-hidden="true"></span>
+      </figure>
+      <div class="contact-address">
+        <span class="mono">Adresse</span>
+        <address>
+          <strong>SIDMA</strong><br>
+          2 rue de l'Avenir<br>
+          91350 Grigny
+        </address>
+        <p class="c-hours mono">Accueil · Lun – Ven · 8h00 – 18h00</p>
+      </div>
+    </div>
+  </div>
+  <div class="giant display" aria-hidden="true">SIDMA</div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">© <span id="y"></span> SIDMA · Équipement de cuisine professionnelle depuis 1975</span>
+    <span class="mono">Fabriqué en France</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Barre de navigation masquée tant que le portail d'ouverture est à l'écran
+  const portail = document.getElementById('portail');
+  function updateNav() {
+    const hidden = !!portail && portail.getBoundingClientRect().bottom > 72;
+    nav.classList.toggle('is-hidden', hidden);
+    nav.inert = hidden;
+    if (hidden) { nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); }
+  }
+  addEventListener('scroll', updateNav, { passive: true });
+  addEventListener('resize', updateNav);
+
+  // Menu mobile
+  const nav = document.getElementById('nav');
+  const burger = nav.querySelector('.burger');
+  burger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+  });
+  nav.querySelectorAll('ul a').forEach(a => a.addEventListener('click', () => {
+    nav.classList.remove('open'); burger.setAttribute('aria-expanded', false);
+  }));
+  updateNav();
+
+  // Apparition au scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Catalogue location (source : Catalogue client SIDMA)
+  const CATS = { cuisson: 'Cuisson', froid: 'Froid', laverie: 'Laverie', petit: 'Petit matériel', maintien: 'Maintien', inox: 'Inox & glace' };
+  const PRO = 'Professionnels', PRO_PART = 'Professionnels et particuliers', PRO_AV = 'Professionnels et particuliers avertis';
+  const INST = 'Livraison et installation obligatoires par SIDMA';
+  const RET_LIV = 'Retrait adapté ou livraison SIDMA';
+  const RET_MEP = 'Retrait adapté ou livraison SIDMA — mise en place / raccordement possible sur demande';
+  const ACCES = 'Accès, implantation et raccordements à valider avant confirmation de location.';
+  const DIM = 'Dimensions, accès et implantation à contrôler avant confirmation de location.';
+  const EQUIPMENTS = [
+    ['cuisson','Fours mixtes','Four mixte compact 6 niveaux GN 2/3','Four mixte compact pour produire avec précision dans un espace réduit. Combine vapeur et air pulsé ; idéal pour petites cuisines, laboratoires et points de vente.',['6 niveaux GN 2/3','20 à 80 repas/jour','5,7 kW — 400 V tri','655 × 555 × 567 mm','64 kg'],180,PRO,INST,'Raccordements électrique, eau et évacuation à valider avant installation.',true],
+    ['cuisson','Fours mixtes','Four mixte 6 niveaux GN 1/1','Four mixte polyvalent pour la cuisson, le rôtissage, la vapeur et la remise en température. Adapté aux restaurants, traiteurs et cuisines collectives.',['6 niveaux GN 1/1','30 à 100 repas/jour','10,8 kW — 400 V tri','850 × 775 × 754 mm','101 kg'],225,PRO,INST,'Raccordements électrique, eau et évacuation à valider avant installation.',true],
+    ['cuisson','Fours mixtes','Four mixte 10 niveaux GN 1/1','Four mixte professionnel 10 niveaux pour cuisson vapeur, air pulsé, rôtissage et remise en température.',['10 niveaux GN 1/1','80 à 150 repas/jour','18,9 kW — 400 V tri','850 × 775 × 1 014 mm','130 kg'],325,PRO,INST,'Accès, implantation et raccordements à valider avant confirmation de location.',true],
+    ['cuisson','Fours mixtes','Four mixte 20 niveaux GN 1/1','Four mixte sur chariot 20 niveaux destiné aux productions intensives, cuisines centrales et grands événements.',['20 niveaux GN 1/1','40 niveaux GN 1/2','37,2 kW — 400 V tri','254 kg'],480,PRO,INST,'Accès, implantation et raccordements à valider avant confirmation de location.',true],
+    ['cuisson','Cuisson multifonction','Système de cuisson multifonction 2 cuves compact','Deux cuves indépendantes pour saisir, cuire, frire, bouillir ou maintenir en température. Remplace plusieurs équipements.',['2 cuves de 17 L','Dès 30 repas/service','14 kW — 400 V tri','1 100 × 756 × 485 mm','117 kg'],250,PRO,INST,'Implantation et raccordements à contrôler avant confirmation de location.',true],
+    ['cuisson','Cuisson multifonction','Système de cuisson multifonction 2 cuves','Deux cuves indépendantes pour saisir, cuire, frire, bouillir et maintenir en température.',['2 cuves de 25 L','50 à 100 repas/service','21 kW — 400 V tri','1 100 × 938 × 485 mm','134 kg'],320,PRO,INST,'Accès, implantation et raccordements à valider avant confirmation de location.',true],
+    ['cuisson','Cuisson multifonction','Système de cuisson multifonction 100 litres','Grande capacité, adapté aux productions soutenues des restaurants, traiteurs et collectivités.',['Cuve de 100 L','100 à 300 repas/service','27 kW — 400 V tri','1 030 × 894 × 1 078 mm','216 kg'],450,PRO,INST,'Accès, implantation et raccordements à valider avant confirmation de location.',true],
+    ['cuisson','Cuisson multifonction','Sauteuse multifonction grande capacité','Sauteuse destinée aux productions intensives : collectivités, cuisines centrales, grands traiteurs et sites événementiels.',['Cuve de 150 L','100 à 500 repas/service','41 kW — 400 V tri','1 365 × 894 × 1 078 mm','256 kg'],650,'Professionnels et collectivités',INST,'Étude technique préalable indispensable : accès, puissance et raccordements.',true],
+    ['cuisson','Induction','Plaque à induction mono foyer 3 000 W','Plaque à induction compacte, prête à brancher, surface SCHOTT CERAN®, commande tactile et filtre à graisse intégré.',['3 kW','230 V','330 × 420 × 105 mm','5,4 kg'],35,PRO_PART,'Retrait client ou livraison SIDMA','Prise 230 V adaptée et récipient compatible induction.'],
+    ['cuisson','Friteuses','Friteuse électrique 1 cuve 8 litres','Friteuse de comptoir avec vidange, adaptée aux besoins ponctuels et aux petits débits.',['1 cuve de 8 L','3,25 kW','6 kg/h','290 × 480 × 430 mm','8 kg'],55,PRO,RET_LIV,'Vidange complète et nettoyage obligatoires avant restitution.'],
+    ['cuisson','Friteuses','Friteuse électrique 2 cuves de 8 litres','Friteuse de comptoir à deux cuves indépendantes, avec vidange, pour diversifier les productions.',['2 cuves de 8 L','2 × 3,25 kW','6 kg/h par cuve','580 × 480 × 430 mm','15 kg'],95,PRO,RET_LIV,'Vidange complète et nettoyage obligatoires avant restitution.'],
+    ['cuisson','Friteuses','Friteuse sur coffre 15/18 litres','Friteuse électrique haut rendement sur coffre, conçue pour les services intensifs, avec deux paniers.',['Cuve 15/18 L','52 à 64 kg/h','22 kW — 400 V tri','400 × 600 × 850-900 mm','59 kg'],145,PRO,INST,'Alimentation 400 V triphasée validée. Vidange et nettoyage obligatoires avant restitution.',true],
+    ['froid','Armoires','Armoire réfrigérée positive 1 porte','Armoire ventilée GN 2/1 pour boissons, ingrédients et préparations. Mobile et simple à mettre en service.',['552 L — GN 2/1','-2 à +8 °C','230 V — 270 W','654 × 800 × 2 018 mm','100 kg'],175,PRO_PART,RET_MEP,'Transport vertical et temps de repos avant branchement à respecter.'],
+    ['froid','Armoires','Armoire réfrigérée négative 1 porte','Armoire de congélation ventilée GN 2/1 pour renforcer le stockage négatif lors d’un événement ou d’un pic d’activité.',['552 L — GN 2/1','-22 à -17 °C','230 V — 540 W','654 × 800 × 2 018 mm','100 kg'],195,PRO_AV,RET_MEP,'Local ventilé, alimentation dédiée et transport vertical recommandés.'],
+    ['froid','Armoires','Armoire réfrigérée positive 2 portes','Double porte à grand volume pour le stockage positif temporaire : restaurants, traiteurs, collectivités, manifestations.',['1 235 L — GN 2/1','-2 à +8 °C','230 V — 380 W','1 314 × 800 × 2 018 mm','155 kg'],260,PRO,RET_MEP,'Vérifier les accès, la largeur des portes et la capacité du sol.'],
+    ['froid','Armoires','Armoire réfrigérée négative 2 portes','Congélation double porte de grande capacité pour un besoin ponctuel de froid négatif.',['1 235 L — GN 2/1','-22 à -17 °C','230 V — 800 W','1 314 × 800 × 2 018 mm','155 kg'],290,PRO,RET_MEP,'Vérifier les accès, l’alimentation et la ventilation du local.'],
+    ['froid','Cellules de refroidissement','Cellule de refroidissement et surgélation 5 niveaux','Cellule compacte de refroidissement rapide et de surgélation pour restaurants, traiteurs et laboratoires.',['94 L — 5 niveaux','GN 1/1 ou 600 × 400','-18 à +3 °C','230 V — 1 300 W','750 × 815 × 870 mm'],160,PRO,RET_MEP,'Vérifier les accès, la ventilation et l’alimentation électrique avant livraison.'],
+    ['froid','Tables réfrigérées','Table réfrigérée positive 2 portes','Plan de travail inox et stockage ventilé directement accessible au poste de préparation. Profondeur 700 mm.',['280 L','-2 à +8 °C','230 V — 250 W','1 360 × 700 × 840 mm','95 kg'],155,PRO,RET_MEP,'Accès, alimentation, ventilation et maintien à niveau à vérifier avant livraison.'],
+    ['froid','Tables réfrigérées','Table réfrigérée positive 3 portes','Plan de travail inox et stockage ventilé directement accessible au poste de préparation. Profondeur 700 mm.',['420 L','-2 à +8 °C','230 V — 400 W','1 795 × 700 × 840 mm','120 kg'],195,PRO,RET_MEP,'Accès, alimentation, ventilation et maintien à niveau à vérifier avant livraison.'],
+    ['froid','Tables réfrigérées','Table réfrigérée positive 4 portes avec dosseret','Table de stockage réfrigérée à quatre portes, plan de travail inox et dosseret arrière. Profondeur 700 mm.',['549 L brut','-2 à +8 °C','230 V — 208 W','2 242 × 700 × 850 mm'],200,PRO,'Livraison SIDMA ; mise en place possible','Accès, ventilation et alimentation 230 V à valider.'],
+    ['laverie','Laverie','Lave-vaisselle frontal panier 500','Lave-vaisselle compact avec adoucisseur et pompe de vidange intégrés, pour les cuisines actives.',['Panier 500 × 500','48 paniers/h','2,3 L/panier','3,5 kW — 230 V','575 × 605 × 820 mm'],95,PRO,RET_MEP,ACCES],
+    ['laverie','Laverie','Lave-verres panier 400','Lave-verres à interface tactile, adoucisseur intégré et faible consommation d’eau.',['Panier 400 × 400','48 paniers/h','1,8 L/panier','3,2 kW — 230 V','466 × 556 × 705 mm'],75,PRO,RET_MEP,ACCES],
+    ['laverie','Laverie','Lave-vaisselle à capot panier 500','Pour restaurants, traiteurs et collectivités, avec pompe de vidange et doseurs de produits intégrés.',['Panier 500 × 500','Jusqu’à 40 paniers/h','9,7 kW — 400 V','620 × 736 × 1 530 mm'],145,PRO,INST,'Arrivée d’eau, évacuation et alimentation 400 V à valider.',true],
+    ['petit','Petit matériel','Bain-marie électrique GN 1/1 avec vidange','Bain-marie inox de comptoir pour maintenir sauces et préparations à température.',['19 L','GN 1/1 — prof. 150 mm','Max. 85 °C','580 × 340 × 245 mm','Inox AISI 304'],45,PRO_PART,RET_LIV,ACCES],
+    ['petit','Petit matériel','Micro-ondes professionnel programmable','Micro-ondes inox programmable, conçu pour un usage intensif et une cuisson homogène.',['26 L','1 850 W restitués','50 programmes','464 × 557 × 368 mm'],45,PRO_PART,RET_LIV,ACCES],
+    ['maintien','Maintien en température','Armoire chaude mobile 10 niveaux grand format','Armoire chaude ventilée grand format pour le maintien en température des productions.',['430 L','10 niv. GN 2/1 ou 600 × 800','Max. 180 °C','720 × 1 040 × 1 160 mm','85 kg'],165,PRO,RET_MEP,ACCES],
+    ['maintien','Maintien en température','Armoire chaude mobile 17 niveaux','Armoire chaude verticale adaptée aux traiteurs, collectivités et prestations événementielles.',['390 L','17 niv. GN 1/1 ou 600 × 400','Max. 180 °C','500 × 800 × 1 750 mm','85 kg'],190,PRO,RET_MEP,ACCES],
+    ['maintien','Maintien en température','Chafing dish électrique GN 1/1','Chafing dish inox pour buffets, avec thermostat réglable et bac GN 1/1.',['13,5 L','GN 1/1 — prof. 100 mm','1 kW — 230 V','623 × 356 × 285 mm','8,3 kg'],35,PRO_PART,'Retrait client ou livraison SIDMA','Prise 230 V et support stable à proximité.'],
+    ['inox','Inox','Table inox centrale mobile 1 000 mm','Table centrale en acier inoxydable, sans dosseret, sur roues, avec étagère inférieure fixe.',['1 000 × 700 × 900 mm','Étagère inférieure','4 roues'],45,PRO,RET_LIV,DIM],
+    ['inox','Inox','Table inox centrale mobile 2 000 mm','Table centrale en acier inoxydable, sans dosseret, sur roues, avec étagère inférieure fixe.',['2 000 × 700 × 900 mm','Étagère inférieure','4 roues'],60,PRO,RET_LIV,DIM],
+    ['inox','Inox','Plonge lave-vaisselle 1 bac égouttoir gauche','Plonge inox avec un bac, un égouttoir à gauche et robinetterie mélangeuse.',['1 200 × 700 × 900 mm','Bac 500 × 500 × 300','Habillage 3 faces','Avec robinet'],75,PRO,'Livraison SIDMA ; raccordement possible sur demande','Arrivée d’eau, évacuation, accès et implantation à valider.'],
+    ['inox','Inox','Lave-mains autonome mobile','Lave-mains inox autonome, robuste et hygiénique, pour cuisines, laboratoires et zones de préparation.',['415 × 345 × 1 200 mm','2 bidons de 13 L','Commande au pied','2 roulettes'],80,PRO,RET_LIV,DIM],
+    ['inox','Inox','Plonge inox 1 bac égouttoir droit','Plonge inox robuste et hygiénique avec égouttoir à droite et étagère inférieure.',['1 200 × 700 × 900 mm','Bac 500 × 500 × 300','Égouttoir droit','Robinet mélangeur'],75,PRO,RET_MEP,DIM],
+    ['inox','Inox','Plonge inox 2 bacs avec chauffe-eau','Plonge inox à deux bacs avec chauffe-eau instantané pour créer un poste de lavage temporaire.',['1 900 × 700 mm','2 bacs','Chauffe-eau instantané'],75,PRO,'Livraison SIDMA ; raccordement possible','Arrivée d’eau, évacuation et alimentation électrique à valider.'],
+    ['cuisson','Cuisson mobile','Plancha gaz professionnelle mobile','Plancha gaz en fonte émaillée, deux zones de chauffe, récupération des jus amovible. Bouteille de gaz incluse.',['6 kW','Surface 500 × 460 mm','900 × 650 × 950 mm','4 roulettes'],125,PRO_AV,RET_MEP,'Utilisation en zone ventilée et respect des règles applicables au gaz.'],
+    ['cuisson','Cuisson mobile','Plancha électrique professionnelle mobile','Surface chromée émaillée, deux zones indépendantes et bac de récupération amovible.',['4,4 kW — 230 V','Surface 580 × 460 mm','900 × 650 × 950 mm','4 roulettes'],125,PRO_AV,RET_MEP,'Circuit 230 V dimensionné pour 4,4 kW à valider.'],
+    ['cuisson','Cuisson mobile','Module mobile 2 feux gaz','Table de cuisson gaz mobile, logement bouteille jusqu’à 13 kg et rangement GN 1/1. Bouteille incluse.',['2 brûleurs de 3 kW','600 × 650 × 950 mm','4 roulettes'],85,PRO_AV,RET_MEP,'Utilisation en zone ventilée ; grilles de cuisson non fournies.'],
+    ['inox','Glace','Machine à glaçons pleins 23 kg / 24 h','Machine à glaçons pleins à aspersion avec réserve intégrée, pour bars, restaurants et événements.',['23 kg / 24 h','Réserve 6,5 kg','300 W — 230 V','340 × 480 × 600 mm'],75,PRO,'Livraison SIDMA ; raccordement possible','Arrivée d’eau potable, évacuation et prise 230 V à valider.']
+  ];
+
+  const grid = document.getElementById('equip-grid');
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  grid.innerHTML = EQUIPMENTS.map(([cat, sub, name, desc, specs, price, pub, dispo, prereq, inst], i) => {
+    const n = String(i + 1).padStart(2, '0');
+    return `<article class="equip" data-cat="${cat}">
+      <div class="thumb"><span class="num">${n}</span><img src="images/location/${n}.png" alt="${esc(name)}" loading="lazy"><span class="ref mono">${CATS[cat]}</span></div>
+      <div class="body">
+        <span class="cat mono">${esc(sub)}</span>
+        <h3>${esc(name)}</h3>
+        <p>${esc(desc)}</p>
+        <ul class="specs">${specs.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+        <details><summary>Conditions</summary><dl>
+          <dt>Public</dt><dd>${esc(pub)}</dd>
+          <dt>Mise à disposition</dt><dd>${esc(dispo)}</dd>
+          <dt>Prérequis</dt><dd>${esc(prereq)}</dd>
+        </dl></details>
+      </div>
+      <div class="price"><span class="mono">À partir de${inst ? '*' : ''}</span><strong>${price} € HT<span>/ jour</span></strong></div>
+    </article>`;
+  }).join('');
+
+  // Filtres location
+  const filters = document.querySelector('.filters');
+  const count = c => EQUIPMENTS.filter(e => e[0] === c).length;
+  filters.innerHTML = `<button class="active" data-filter="all">Tout <small>${EQUIPMENTS.length}</small></button>` +
+    Object.entries(CATS).map(([k, v]) => `<button data-filter="${k}">${v} <small>${count(k)}</small></button>`).join('');
+  const items = grid.querySelectorAll('.equip');
+  const moreBtn = document.getElementById('equip-more');
+  // Aperçu « Tout » : 2 lignes complètes, quel que soit le nombre de colonnes affichées
+  const PREVIEW_ROWS = 2;
+  const columns = () => getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+  let filter = 'all', expanded = false;
+  function applyFilter() {
+    let shown = 0; const preview = PREVIEW_ROWS * columns();
+    items.forEach(it => {
+      const match = filter === 'all' || it.dataset.cat === filter;
+      it.hidden = !match || (filter === 'all' && !expanded && shown >= preview);
+      if (match) shown++;
+    });
+    moreBtn.parentElement.hidden = filter !== 'all';
+    moreBtn.textContent = expanded ? 'Voir moins' : 'Voir tout le catalogue';
+    moreBtn.setAttribute('aria-expanded', expanded);
+  }
+  filters.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    filters.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+    filter = b.dataset.filter; applyFilter();
+  });
+  moreBtn.addEventListener('click', () => {
+    expanded = !expanded; applyFilter();
+    // En repliant, on ramène le haut de la grille à l'écran
+    if (!expanded) filters.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  applyFilter();
+  let cols = columns();
+  addEventListener('resize', () => { if (columns() !== cols) { cols = columns(); applyFilter(); } });
+</script>
+<script src="js/waves-shader.js" defer></script>
+<script src="js/glyph-portal.js" defer></script>
+</body>
+</html>
